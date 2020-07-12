@@ -2,7 +2,6 @@ from aqt.reviewer import Reviewer
 from aqt.utils import showText
 from aqt import dialogs
 
-
 def get_editcurrent():
     return dialogs._dialogs['EditCurrent'][1]
 

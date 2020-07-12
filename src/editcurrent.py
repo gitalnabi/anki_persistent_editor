@@ -1,12 +1,10 @@
 import aqt
 from aqt import dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox
-from aqt.utils import restoreGeom, saveGeom, tooltip
+from aqt.utils import restoreGeom, saveGeom
 from aqt.editcurrent import EditCurrent
 
 from os.path import  join, dirname
-from aqt.utils import showText
 
-from aqt.editor import Editor
 from .editor import PersistentEditor
 
 def get_editor_js() -> str:
@@ -38,7 +36,6 @@ class PersistentEditCurrent(EditCurrent):
             self.obscureEditor()
         else:
             self.editor.setNote(self.mw.reviewer.card.note(), focusTo=0)
-            self.unobscureEditor()
 
         restoreGeom(self, "editcurrent")
         gui_hooks.state_did_reset.append(self.onReset)
@@ -58,7 +55,7 @@ class PersistentEditCurrent(EditCurrent):
         self.editor.web.eval('PersistentEditor.obscure()')
 
     def unobscureEditor(self):
-        pass
+        self.editor.web.eval('PersistentEditor.unobscure()')
 
     def _saveAndClose(self) -> None:
         gui_hooks.state_did_reset.remove(self.onReset)
@@ -68,3 +65,6 @@ class PersistentEditCurrent(EditCurrent):
         saveGeom(self, "editcurrent")
         aqt.dialogs.markClosed("EditCurrent")
         QDialog.reject(self)
+
+def init_editcurrent():
+    dialogs.register_dialog('EditCurrent', PersistentEditCurrent, None)

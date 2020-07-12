@@ -1,4 +1,3 @@
-
 from aqt import dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox
 from aqt.qt import qconnect
 from aqt.editor import Editor
@@ -20,6 +19,13 @@ class PersistentEditor(Editor):
     def setupTags(self):
         super().setupTags()
         qconnect(self.tags.lostFocus, self.redrawMainWindow)
+
+    def maybeObscureAll(self):
+        if self.mw.reviewer.state == 'question':
+            self.web.eval('PersistentEditor.obscure()')
+
+    def unobscure(self):
+        self.web.eval(f'PersistentEditor.unobscureField({self.currentField})')
 
     def onBridgeCmd(self, cmd) -> None:
         if not self.note:
@@ -44,8 +50,9 @@ class PersistentEditor(Editor):
             self.note.fields[ord] = txt
             if not self.addMode:
                 self.note.flush()
-                # self.mw.requireReset()
+                self.mw.requireReset()
             if type == "blur":
+                self.maybeObscureAll() # NOTE diverge from Anki
                 self.currentField = None
                 # run any filters
                 if gui_hooks.editor_did_unfocus_field(False, self.note, ord):
@@ -56,19 +63,15 @@ class PersistentEditor(Editor):
                     self.checkValid()
             else:
                 gui_hooks.editor_did_fire_typing_timer(self.note)
-                self.mw.progress.timer(100, self.redrawMainWindow, False)
+                self.mw.progress.timer(100, self.redrawMainWindow, False) # NOTE diverge from anki
                 self.checkValid()
         # focused into field?
         elif cmd.startswith("focus"):
             (type, num) = cmd.split(":", 1)
             self.currentField = int(num)
+            self.unobscure()
             gui_hooks.editor_did_focus_field(self.note, self.currentField)
         elif cmd in self._links:
             self._links[cmd](self)
         else:
             print("uncaught cmd", cmd)
-
-# gui_hooks.editor_did_init(self)
-# gui_hooks.editor_did_focus_field(self.note, self.currentField)
-# gui_hooks.editor_did_unfocus_field(False, self.note, ord):
-# gui_hooks.editor_did_fire_typing_timer(self.note)

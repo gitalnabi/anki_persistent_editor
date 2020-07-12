@@ -1,5 +1,6 @@
-import aqt
-from aqt import AnkiQt, mw
+from aqt import AnkiQt, dialogs, mw
+
+from .reviewer import PersistentReviewer
 
 class AvoidRequireReset:
     def __init__(self, obj):
@@ -11,12 +12,11 @@ class AvoidRequireReset:
         else:
             return getattr(self.orig, attr)
 
-
 def init_mw():
-    onEditCurrent = mw.onEditCurrent
+    mw.reviewer = PersistentReviewer(mw)
 
     def onPersistentEditCurrent(self):
-        aqt.dialogs.open("EditCurrent", AvoidRequireReset(self))
+        dialogs.open("EditCurrent", AvoidRequireReset(self))
 
     # reassign method on this mw object only
     mw.onEditCurrent = onPersistentEditCurrent.__get__(mw, AnkiQt)
