@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 declare DIR="$(cd "$(dirname "$0")/.." && pwd -P)"
-declare addon_name="PersitentEditorDev"
+declare addon_name="PersistentEditorDev"
 declare customdir=''
 
 if [[ "$1" =~ ^-?d$ ]]; then
