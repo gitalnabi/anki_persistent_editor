@@ -6,6 +6,7 @@ from aqt.editcurrent import EditCurrent
 from os.path import  join, dirname
 from aqt.utils import showText
 
+from aqt.editor import Editor
 from .editor import PersistentEditor
 
 def get_editor_js() -> str:
@@ -21,20 +22,18 @@ class PersistentEditCurrent(EditCurrent):
         self.mw = mw
         self.form = aqt.forms.editcurrent.Ui_Dialog()
         self.form.setupUi(self)
-        self.setWindowTitle(_("Persistent Edit Current"))
+        self.setWindowTitle(_("Persistent Edit Current")) # NOTE diverge from Anki
         self.setMinimumHeight(400)
         self.setMinimumWidth(250)
         self.form.buttonBox.button(QDialogButtonBox.Close).setShortcut(
             QKeySequence("Ctrl+Return")
         )
-        self.editor = PersistentEditor(self.mw, self.form.fieldsArea, self)
+        self.editor = PersistentEditor(self.mw, self.form.fieldsArea, self) # NOTE diverge from Anki
         self.editor.card = self.mw.reviewer.card
-        self.editor.setNote(self.mw.reviewer.card.note()) #, focusTo=0)
-        self.editor.web.eval(get_editor_js())
-
+        self.editor.setNote(self.mw.reviewer.card.note(), focusTo=0)
         restoreGeom(self, "editcurrent")
         gui_hooks.state_did_reset.append(self.onReset)
-        # self.mw.requireReset()
+        self.mw.requireReset()
         self.show()
         # reset focus after open, taking care not to retain webview
         # pylint: disable=unnecessary-lambda
@@ -49,10 +48,13 @@ class PersistentEditCurrent(EditCurrent):
     def obscureEditor(self):
         pass
 
+    def unobscureEditor(self):
+        pass
+
     def _saveAndClose(self) -> None:
         gui_hooks.state_did_reset.remove(self.onReset)
 
-        self.editor.cleanup()
+        self.editor.cleanup() # NOTE diverge from Anki
 
         saveGeom(self, "editcurrent")
         aqt.dialogs.markClosed("EditCurrent")
