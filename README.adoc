@@ -1,0 +1,3 @@
+= Anki Persistent Editor
+
+This is heavily inspired by the MIA Editor
