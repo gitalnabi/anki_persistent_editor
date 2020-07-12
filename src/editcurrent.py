@@ -30,7 +30,16 @@ class PersistentEditCurrent(EditCurrent):
         )
         self.editor = PersistentEditor(self.mw, self.form.fieldsArea, self) # NOTE diverge from Anki
         self.editor.card = self.mw.reviewer.card
-        self.editor.setNote(self.mw.reviewer.card.note(), focusTo=0)
+
+        self.editor.web.eval(get_editor_js()) # NOTE diverge from Anki
+
+        if self.mw.reviewer.state == 'question':
+            self.editor.setNote(self.mw.reviewer.card.note())
+            self.obscureEditor()
+        else:
+            self.editor.setNote(self.mw.reviewer.card.note(), focusTo=0)
+            self.unobscureEditor()
+
         restoreGeom(self, "editcurrent")
         gui_hooks.state_did_reset.append(self.onReset)
         self.mw.requireReset()
@@ -46,7 +55,7 @@ class PersistentEditCurrent(EditCurrent):
         self.editor.setNote(note)
 
     def obscureEditor(self):
-        pass
+        self.editor.web.eval('PersistentEditor.obscure()')
 
     def unobscureEditor(self):
         pass

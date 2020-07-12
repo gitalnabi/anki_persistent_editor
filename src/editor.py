@@ -22,8 +22,6 @@ class PersistentEditor(Editor):
         qconnect(self.tags.lostFocus, self.redrawMainWindow)
 
     def onBridgeCmd(self, cmd) -> None:
-        # showText(cmd)
-
         if not self.note:
             # shutdown
             return
@@ -69,3 +67,8 @@ class PersistentEditor(Editor):
             self._links[cmd](self)
         else:
             print("uncaught cmd", cmd)
+
+# gui_hooks.editor_did_init(self)
+# gui_hooks.editor_did_focus_field(self.note, self.currentField)
+# gui_hooks.editor_did_unfocus_field(False, self.note, ord):
+# gui_hooks.editor_did_fire_typing_timer(self.note)

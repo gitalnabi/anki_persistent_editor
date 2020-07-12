@@ -14,16 +14,16 @@ class PersistentReviewer(Reviewer):
         if current_editcurrent:
             current_editcurrent.setNote(self.card.note())
 
-    # def _showQuestion(self):
-    #     super()._showQuestion()
+    def _showQuestion(self):
+        super()._showQuestion()
 
-    #     current_editcurrent = get_editcurrent()
-    #     if current_editcurrent:
-    #         pass
+        current_editcurrent = get_editcurrent()
+        if current_editcurrent:
+            current_editcurrent.obscureEditor()
 
-    # def _showAnswer(self):
-    #     super()._showAnswer()
+    def _showAnswer(self):
+        super()._showAnswer()
 
-    #     current_editcurrent = get_editcurrent()
-    #     if current_editcurrent:
-    #         pass
+        current_editcurrent = get_editcurrent()
+        if current_editcurrent:
+            current_editcurrent.unobscureEditor()
