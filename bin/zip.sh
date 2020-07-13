@@ -15,3 +15,4 @@ zip -r "$DIR/build/$addon_id.ankiaddon" \
   "manifest.json" \
   "__init__.py" \
   "src/"*".py" \
+  "src/"*".js" \
