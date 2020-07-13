@@ -1,6 +1,6 @@
 import aqt
 from aqt import dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox, QEvent
-from aqt.utils import restoreGeom, saveGeom, showText
+from aqt.utils import restoreGeom, saveGeom
 from aqt.editcurrent import EditCurrent
 
 from os.path import  join, dirname
@@ -76,8 +76,11 @@ class PersistentEditCurrent(EditCurrent):
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Leave and self.mw.reviewer.state == 'question':
-            self.editor.saveNow(self.editor.redrawMainWindow, False)
-            self.obscureEditor()
+            def after():
+                self.editor.redrawMainWindow()
+                self.obscureEditor()
+
+            self.editor.saveNowIfNecessary(after, False)
             return False
 
         else:

@@ -1,13 +1,17 @@
+from os.path import  join, dirname
+
 from aqt import dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox
 from aqt.qt import qconnect
 from aqt.editor import Editor
 from aqt.utils import restoreGeom, saveGeom, tooltip
 
-from os.path import  join, dirname
-from aqt.utils import showText
-
 class PersistentEditor(Editor):
     def redrawMainWindow(self):
+
+        # Maybe reviewer already finished
+        if self.mw.reviewer.card is None:
+            return
+
         # Trigger redrawing of mw without losing focus
         self.mw.reviewer.card.load()
 
@@ -19,6 +23,9 @@ class PersistentEditor(Editor):
     def setupTags(self):
         super().setupTags()
         qconnect(self.tags.lostFocus, self.redrawMainWindow)
+
+        # TODO this does not really belong here, but for now it's fine
+        self.markChanged = False
 
     def maybeObscureAll(self):
         if self.mw.reviewer.state == 'question':
@@ -43,14 +50,25 @@ class PersistentEditor(Editor):
 
         self.saveNow(callback)
 
+    def saveNow(self, callback, keepFocus=False):
+        super().saveNow(callback, keepFocus)
+        self.markChanged = False
+
+    def saveNowIfNecessary(self, callback, keepFocus=False):
+        # avoid constant blinking on hover
+        if self.markChanged:
+            self.saveNow(callback, keepFocus)
+
     def onBridgeCmd(self, cmd) -> None:
         if not self.note:
             # shutdown
             return
+
         # focus lost or key/button pressed?
         if cmd.startswith("blur") or cmd.startswith("key"):
             (type, ord, nid, txt) = cmd.split(":", 3)
             ord = int(ord)
+
             try:
                 nid = int(nid)
             except ValueError:
@@ -84,6 +102,7 @@ class PersistentEditor(Editor):
                 gui_hooks.editor_did_fire_typing_timer(self.note)
 
                 # NOTE diverge from Anki
+                self.markChanged = True
                 self.unobscure()
                 self.mw.progress.timer(10, self.redrawMainWindow, False)
 
@@ -92,7 +111,11 @@ class PersistentEditor(Editor):
         elif cmd.startswith("focus"):
             (type, num) = cmd.split(":", 1)
             self.currentField = int(num)
-            self.unobscure() # NOTE diverge from Anki
+
+            # NOTE diverge from Anki
+            self.unobscure()
+            self.markChanged = True
+
             gui_hooks.editor_did_focus_field(self.note, self.currentField)
         elif cmd in self._links:
             self._links[cmd](self)

@@ -1,5 +1,4 @@
 from aqt.reviewer import Reviewer
-from aqt.utils import showText
 from aqt import dialogs, gui_hooks
 
 def get_editcurrent():
