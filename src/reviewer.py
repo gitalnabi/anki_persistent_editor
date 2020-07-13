@@ -1,6 +1,6 @@
 from aqt.reviewer import Reviewer
 from aqt.utils import showText
-from aqt import dialogs
+from aqt import dialogs, gui_hooks
 
 def get_editcurrent():
     return dialogs._dialogs['EditCurrent'][1]
@@ -11,8 +11,12 @@ class PersistentReviewer(Reviewer):
 
         current_editcurrent = get_editcurrent()
         if current_editcurrent:
-            current_editcurrent.setNote(self.card.note())
-            current_editcurrent.obscureEditor()
+            if self.card:
+                current_editcurrent.setNote(self.card.note())
+                current_editcurrent.obscureEditor()
+            else:
+                # reviewer finished and has gone to overview
+                current_editcurrent.saveAndClose()
 
     def _showQuestion(self, triggerObscure=True):
         super()._showQuestion()
@@ -31,3 +35,11 @@ class PersistentReviewer(Reviewer):
         # only if card was flipped
         if triggerObscure and current_editcurrent:
             current_editcurrent.unobscureEditor()
+
+def close_editcurrent():
+    current_editcurrent = get_editcurrent()
+    if current_editcurrent:
+        current_editcurrent.saveAndClose()
+
+def init_reviewer():
+    gui_hooks.reviewer_will_end.append(close_editcurrent)
