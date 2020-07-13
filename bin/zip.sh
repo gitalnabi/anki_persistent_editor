@@ -12,10 +12,6 @@ fi
 cd "$DIR"
 
 zip -r "$DIR/build/$addon_id.ankiaddon" \
-  "config."{json,md} \
   "manifest.json" \
-  "user_files/README.md" \
   "__init__.py" \
   "src/"*".py" \
-  "src/lib/"*".py" \
-  "src/gui/"*".py" \
