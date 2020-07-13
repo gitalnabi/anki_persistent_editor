@@ -69,7 +69,7 @@ class PersistentEditCurrent(EditCurrent):
         self.mw.progress.timer(100, lambda: self.editor.web.setFocus(), False)
 
     def reopen(self, mw):
-        self.reject()
+        self.show()
 
     def setNote(self, note):
         self.editor.setNote(note)
