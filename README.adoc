@@ -2,7 +2,7 @@
 
 This is an add-on that makes the editor window during Review persistent.
 
-[Demo gif](https://media.githubusercontent.com/media/hgiesel/anki_persistent_editor/master/images/demo.gif)
+image::https://media.githubusercontent.com/media/hgiesel/anki_persistent_editor/master/images/demo.gif[Demo gif]
 
 There are two important shortcuts:
 - `e` will trigger the editor window.
