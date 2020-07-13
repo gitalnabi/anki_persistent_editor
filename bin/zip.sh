@@ -3,7 +3,7 @@ mkdir -p "$DIR/build"
 
 if [[ "$1" =~ ^-?a$ ]]; then
   # for uploading to AnkiWeb
-  declare addon_id=''
+  declare addon_id='1686259334'
 else
   # for installing myself
   declare addon_id='persitent_editor'
