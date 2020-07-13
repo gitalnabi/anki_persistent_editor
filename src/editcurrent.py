@@ -1,6 +1,6 @@
 import aqt
-from aqt import dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox
-from aqt.utils import restoreGeom, saveGeom
+from aqt import dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox, QEvent
+from aqt.utils import restoreGeom, saveGeom, showText
 from aqt.editcurrent import EditCurrent
 
 from os.path import  join, dirname
@@ -11,7 +11,25 @@ def get_editor_js() -> str:
     editor_js_file = join(dirname(__file__), 'editor.js')
 
     with open(editor_js_file, "r", encoding="utf-8") as editor_js:
-        return editor_js.read() 
+        return editor_js.read()
+
+EDITOR_JS = get_editor_js()
+EDITOR_CSS = '''
+#fields td {
+    position: relative;
+}
+
+.coverup {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    background: lavender;
+    border: 1px darkgrey solid;
+}
+'''
 
 class PersistentEditCurrent(EditCurrent):
     def __init__(self, mw) -> None:
@@ -29,13 +47,18 @@ class PersistentEditCurrent(EditCurrent):
         self.editor = PersistentEditor(self.mw, self.form.fieldsArea, self) # NOTE diverge from Anki
         self.editor.card = self.mw.reviewer.card
 
-        self.editor.web.eval(get_editor_js()) # NOTE diverge from Anki
+        # NOTE diverge from Anki
+        self.editor.web.eval(EDITOR_JS)
+        self.editor.web.eval(f'PersistentEditor.appendStyleTag(`{EDITOR_CSS}`)')
 
         if self.mw.reviewer.state == 'question':
             self.editor.setNote(self.mw.reviewer.card.note())
             self.obscureEditor()
         else:
             self.editor.setNote(self.mw.reviewer.card.note(), focusTo=0)
+
+        self.installEventFilter(self)
+        # NOTE end diverge
 
         restoreGeom(self, "editcurrent")
         gui_hooks.state_did_reset.append(self.onReset)
@@ -51,16 +74,26 @@ class PersistentEditCurrent(EditCurrent):
     def setNote(self, note):
         self.editor.setNote(note)
 
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Leave and self.mw.reviewer.state == 'question':
+            self.editor.saveNow(self.editor.redrawMainWindow, False)
+            self.obscureEditor()
+            return False
+
+        else:
+            return super().eventFilter(obj, event)
+
     def obscureEditor(self):
-        self.editor.web.eval('PersistentEditor.obscure()')
+        self.editor.maybeObscureAll()
 
     def unobscureEditor(self):
-        self.editor.web.eval('PersistentEditor.unobscure()')
+        self.editor.unobscureAll()
 
     def _saveAndClose(self) -> None:
         gui_hooks.state_did_reset.remove(self.onReset)
 
-        self.editor.cleanup() # NOTE diverge from Anki
+        # NOTE diverge from Anki
+        self.editor.cleanup()
 
         saveGeom(self, "editcurrent")
         aqt.dialogs.markClosed("EditCurrent")

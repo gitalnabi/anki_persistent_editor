@@ -12,17 +12,22 @@ class PersistentReviewer(Reviewer):
         current_editcurrent = get_editcurrent()
         if current_editcurrent:
             current_editcurrent.setNote(self.card.note())
+            current_editcurrent.obscureEditor()
 
-    def _showQuestion(self):
+    def _showQuestion(self, triggerObscure=True):
         super()._showQuestion()
 
         current_editcurrent = get_editcurrent()
-        if current_editcurrent:
+
+        # only if card was flipped
+        if triggerObscure and current_editcurrent:
             current_editcurrent.obscureEditor()
 
-    def _showAnswer(self):
+    def _showAnswer(self, triggerObscure=True):
         super()._showAnswer()
 
         current_editcurrent = get_editcurrent()
-        if current_editcurrent:
+
+        # only if card was flipped
+        if triggerObscure and current_editcurrent:
             current_editcurrent.unobscureEditor()

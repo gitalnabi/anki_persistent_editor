@@ -12,9 +12,9 @@ class PersistentEditor(Editor):
         self.mw.reviewer.card.load()
 
         if self.mw.reviewer.state == 'question':
-            self.mw.reviewer._showQuestion()
+            self.mw.reviewer._showQuestion(False)
         else:
-            self.mw.reviewer._showAnswer()
+            self.mw.reviewer._showAnswer(False)
 
     def setupTags(self):
         super().setupTags()
@@ -26,6 +26,22 @@ class PersistentEditor(Editor):
 
     def unobscure(self):
         self.web.eval(f'PersistentEditor.unobscureField({self.currentField})')
+
+    def unobscureAll(self):
+        self.web.eval('PersistentEditor.unobscure()')
+
+    def mungeHTML(self, txt):
+        return super().mungeHTML(txt.replace('<div class="coverup"></div>', ''))
+
+    def onHtmlEdit(self):
+        field = self.currentField
+
+        def callback():
+            nonlocal field
+            self._onHtmlEdit(field)
+            self.maybeObscureAll()
+
+        self.saveNow(callback)
 
     def onBridgeCmd(self, cmd) -> None:
         if not self.note:
@@ -52,8 +68,11 @@ class PersistentEditor(Editor):
                 self.note.flush()
                 self.mw.requireReset()
             if type == "blur":
-                self.maybeObscureAll() # NOTE diverge from Anki
                 self.currentField = None
+
+                # NOTE diverge from Anki
+                self.maybeObscureAll()
+
                 # run any filters
                 if gui_hooks.editor_did_unfocus_field(False, self.note, ord):
                     # something updated the note; update it after a subsequent focus
@@ -63,13 +82,17 @@ class PersistentEditor(Editor):
                     self.checkValid()
             else:
                 gui_hooks.editor_did_fire_typing_timer(self.note)
-                self.mw.progress.timer(100, self.redrawMainWindow, False) # NOTE diverge from anki
+
+                # NOTE diverge from Anki
+                self.unobscure()
+                self.mw.progress.timer(10, self.redrawMainWindow, False)
+
                 self.checkValid()
         # focused into field?
         elif cmd.startswith("focus"):
             (type, num) = cmd.split(":", 1)
             self.currentField = int(num)
-            self.unobscure()
+            self.unobscure() # NOTE diverge from Anki
             gui_hooks.editor_did_focus_field(self.note, self.currentField)
         elif cmd in self._links:
             self._links[cmd](self)
