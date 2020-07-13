@@ -1,6 +1,6 @@
 = Anki Persistent Editor
 
-This is an add-on that makes the editor window during Review persistent.
+This add-on will make the editor window for review persistent.
 
 image::https://media.githubusercontent.com/media/hgiesel/anki_persistent_editor/master/images/demo.gif[Demo gif]
 
