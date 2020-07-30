@@ -7,7 +7,6 @@ from aqt.utils import restoreGeom, saveGeom, tooltip
 
 class PersistentEditor(Editor):
     def redrawMainWindow(self):
-
         # Maybe reviewer already finished
         if self.mw.reviewer.card is None:
             return
