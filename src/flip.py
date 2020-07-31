@@ -1,5 +1,4 @@
 from aqt import mw
-import anki
 from aqt.gui_hooks import state_shortcuts_will_change
 
 def flip_card():
