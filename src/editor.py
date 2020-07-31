@@ -1,5 +1,3 @@
-from os.path import  join, dirname
-
 from aqt import dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox
 from aqt.qt import qconnect
 from aqt.editor import Editor
@@ -7,17 +5,17 @@ from aqt.utils import restoreGeom, saveGeom, tooltip
 
 class PersistentEditor(Editor):
     def redrawMainWindow(self):
+        reviewer = self.mw.reviewer
+
         # Maybe reviewer already finished
-        if self.mw.reviewer.card is None:
+        if reviewer.card is None:
             return
 
         # Trigger redrawing of mw without losing focus
-        self.mw.reviewer.card.load()
+        reviewer.card.load()
+        reviewer.triggerObscure = False
 
-        if self.mw.reviewer.state == 'question':
-            self.mw.reviewer._showQuestion(False)
-        else:
-            self.mw.reviewer._showAnswer(False)
+        reviewer._showQuestion() if reviewer.state == 'question' else reviewer._showAnswer()
 
     def setupTags(self):
         super().setupTags()

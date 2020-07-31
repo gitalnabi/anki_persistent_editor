@@ -1,7 +1,5 @@
 from aqt import AnkiQt, dialogs, mw
 
-from .reviewer import PersistentReviewer
-
 class AvoidRequireReset:
     def __init__(self, obj):
         self.orig = obj
@@ -13,8 +11,6 @@ class AvoidRequireReset:
             return getattr(self.orig, attr)
 
 def init_mw():
-    mw.reviewer = PersistentReviewer(mw)
-
     def onPersistentEditCurrent(self):
         dialogs.open("EditCurrent", AvoidRequireReset(self))
 
