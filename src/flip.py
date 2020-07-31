@@ -1,12 +1,10 @@
 from aqt import mw
 from aqt.gui_hooks import state_shortcuts_will_change
 
-def flip_card():
-    if mw.reviewer.state == 'question':
-        mw.reviewer._showAnswer()
+from .reviewer import toggle_reviewer
 
-    elif mw.reviewer.state == 'answer':
-        mw.reviewer._showQuestion()
+def flip_card():
+    toggle_reviewer(mw.reviewer)
 
 def add_flip_card(state, shortcuts):
     if state == 'review':
