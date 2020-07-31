@@ -26,8 +26,13 @@ EDITOR_CSS = '''
     width: 100%;
     height: 100%;
 
-    background: lavender;
-    border: 1px darkgrey solid;
+    background: white;
+    border: 1px #aaaaaa solid;
+}
+
+.nightMode .coverup {
+    background: #3a3a3a;
+    border: 1px #777777 solid;
 }
 '''
 
