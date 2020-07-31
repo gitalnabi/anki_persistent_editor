@@ -6,7 +6,7 @@ from aqt.editcurrent import EditCurrent
 from aqt.utils import restoreGeom, saveGeom, tooltip
 from aqt.gui_hooks import editor_did_init, editor_did_init_shortcuts
 
-from .reviewer import toggle_reviewer
+from .reviewer import refresh_reviewer
 
 class PersistentEditor(Editor):
     def redrawMainWindow(self):
@@ -20,7 +20,7 @@ class PersistentEditor(Editor):
         reviewer.card.load()
         reviewer.triggerObscure = False
 
-        toggle_reviewer(reviewer)
+        refresh_reviewer(reviewer)
 
     def maybeObscureAll(self):
         if self.mw.reviewer.state == 'question':

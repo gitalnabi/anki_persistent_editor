@@ -18,6 +18,15 @@ def toggle_reviewer(reviewer):
     elif state == 'answer':
         reviewer._showQuestion()
 
+def refresh_reviewer(reviewer):
+    state = reviewer.state
+
+    if state == 'question':
+        reviewer._showQuestion()
+
+    elif state == 'answer':
+        reviewer._getTypedAnswer()
+
 def get_editcurrent():
     return dialogs._dialogs['EditCurrent'][1]
 
