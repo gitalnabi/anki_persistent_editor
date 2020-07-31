@@ -6,7 +6,7 @@ class AvoidRequireReset:
 
     def __getattr__(self, attr):
         if attr == 'requireReset':
-            return lambda _self = None, _modal = None: None
+            return lambda _modal=None: None
         else:
             return getattr(self.orig, attr)
 

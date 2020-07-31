@@ -1,7 +1,10 @@
 from aqt import dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox
 from aqt.qt import qconnect
 from aqt.editor import Editor
+from aqt.editcurrent import EditCurrent
+
 from aqt.utils import restoreGeom, saveGeom, tooltip
+from aqt.gui_hooks import editor_did_init
 
 class PersistentEditor(Editor):
     def redrawMainWindow(self):
@@ -17,13 +20,6 @@ class PersistentEditor(Editor):
 
         reviewer._showQuestion() if reviewer.state == 'question' else reviewer._showAnswer()
 
-    def setupTags(self):
-        super().setupTags()
-        qconnect(self.tags.lostFocus, self.redrawMainWindow)
-
-        # TODO this does not really belong here, but for now it's fine
-        self.markChanged = False
-
     def maybeObscureAll(self):
         if self.mw.reviewer.state == 'question':
             self.web.eval('PersistentEditor.obscure()')
@@ -33,6 +29,15 @@ class PersistentEditor(Editor):
 
     def unobscureAll(self):
         self.web.eval('PersistentEditor.unobscure()')
+
+    def saveNowIfNecessary(self, callback, keepFocus=False):
+        # avoid constant blinking on hover
+        if hasattr(self, 'markChanged') and self.markChanged:
+            from aqt.utils import showText
+            showText('meh')
+            self.saveNow(callback, keepFocus)
+
+    # override methods
 
     def mungeHTML(self, txt):
         return super().mungeHTML(txt.replace('<div class="coverup"></div>', ''))
@@ -50,11 +55,6 @@ class PersistentEditor(Editor):
     def saveNow(self, callback, keepFocus=False):
         super().saveNow(callback, keepFocus)
         self.markChanged = False
-
-    def saveNowIfNecessary(self, callback, keepFocus=False):
-        # avoid constant blinking on hover
-        if self.markChanged:
-            self.saveNow(callback, keepFocus)
 
     def onBridgeCmd(self, cmd) -> None:
         if not self.note:
@@ -116,3 +116,13 @@ class PersistentEditor(Editor):
             self._links[cmd](self)
         else:
             print("uncaught cmd", cmd)
+
+def setup_editor(editor):
+    if isinstance(editor.parentWindow, EditCurrent):
+        qconnect(editor.tags.lostFocus, editor.redrawMainWindow)
+
+        # NOTE the markChanged property will identify this editor as being an editor within an editcurrent
+        editor.markChanged = False
+
+def init_editor():
+    editor_did_init.append(setup_editor)
