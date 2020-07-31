@@ -3,38 +3,7 @@ from aqt import dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox,
 from aqt.utils import restoreGeom, saveGeom
 from aqt.editcurrent import EditCurrent
 
-from os.path import  join, dirname
-
 from .editor import PersistentEditor
-
-def get_editor_js() -> str:
-    editor_js_file = join(dirname(__file__), 'editor.js')
-
-    with open(editor_js_file, "r", encoding="utf-8") as editor_js:
-        return editor_js.read()
-
-EDITOR_JS = get_editor_js()
-EDITOR_CSS = '''
-#fields td {
-    position: relative;
-}
-
-.coverup {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-
-    background: white;
-    border: 1px #aaaaaa solid;
-}
-
-.nightMode .coverup {
-    background: #3a3a3a;
-    border: 1px #777777 solid;
-}
-'''
 
 class PersistentEditCurrent(EditCurrent):
     def __init__(self, mw) -> None:
@@ -53,16 +22,11 @@ class PersistentEditCurrent(EditCurrent):
         self.editor.card = self.mw.reviewer.card
 
         # NOTE diverge from Anki
-        self.editor.web.eval(EDITOR_JS)
-        self.editor.web.eval(f'PersistentEditor.appendStyleTag(`{EDITOR_CSS}`)')
-
         if self.mw.reviewer.state == 'question':
             self.editor.setNote(self.mw.reviewer.card.note())
             self.obscureEditor()
         else:
             self.editor.setNote(self.mw.reviewer.card.note(), focusTo=0)
-
-        self.installEventFilter(self)
         # NOTE end diverge
 
         restoreGeom(self, "editcurrent")
