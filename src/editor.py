@@ -102,7 +102,6 @@ class PersistentEditor(Editor):
 
                 # NOTE diverge from Anki
                 self.markChanged = True
-                self.unobscure()
                 self.mw.progress.timer(10, self.redrawMainWindow, False)
 
                 self.checkValid()
@@ -113,7 +112,6 @@ class PersistentEditor(Editor):
 
             # NOTE diverge from Anki
             self.unobscure()
-            self.markChanged = True
 
             gui_hooks.editor_did_focus_field(self.note, self.currentField)
         elif cmd in self._links:
