@@ -1,4 +1,4 @@
-from aqt import dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox
+from aqt import mw, dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox
 from aqt.qt import qconnect
 from aqt.editor import Editor
 from aqt.editcurrent import EditCurrent
@@ -38,6 +38,12 @@ class PersistentEditor(Editor):
             self.saveNow(callback, keepFocus)
 
     # override methods
+
+    def _onFields(self):
+        from aqt.fields import FieldDialog
+
+        # fails with AvoidRequireReset
+        FieldDialog(mw, self.note.model(), parent=self.parentWindow)
 
     def mungeHTML(self, txt):
         return super().mungeHTML(txt.replace('<div class="coverup"></div>', ''))
