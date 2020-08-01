@@ -1,18 +1,22 @@
-from aqt import AnkiQt, dialogs, mw
+from aqt import dialogs, mw
+from aqt.main import AnkiQt
+from anki.hooks import wrap
 
-class AvoidRequireReset:
-    def __init__(self, obj):
-        self.orig = obj
+# https://stackoverflow.com/questions/1443129/completely-wrap-an-object-in-python
+class AvoidRequireReset(AnkiQt):
+    def __init__(self, baseObject):
+        self.__class__ = type(
+            baseObject.__class__.__name__,
+            (self.__class__, baseObject.__class__),
+            {},
+        )
+        self.__dict__ = baseObject.__dict__
 
-    def __getattr__(self, attr):
-        if attr == 'requireReset':
-            return lambda _modal=None: None
-        else:
-            return getattr(self.orig, attr)
+    def requireReset(self, modal=False):
+        pass
+
+def on_persistent_edit_current(mw, _old):
+    dialogs.open("EditCurrent", AvoidRequireReset(mw))
 
 def init_mw():
-    def onPersistentEditCurrent(self):
-        dialogs.open("EditCurrent", AvoidRequireReset(self))
-
-    # reassign method on this mw object only
-    mw.onEditCurrent = onPersistentEditCurrent.__get__(mw, AnkiQt)
+    AnkiQt.onEditCurrent = wrap(AnkiQt.onEditCurrent, on_persistent_edit_current, 'around')
