@@ -32,21 +32,22 @@ def get_editcurrent():
     return dialogs._dialogs['EditCurrent'][1]
 
 def obscure_editcurrent(content, card, side: Literal['reviewAnswer', 'reviewQuestion']):
-    current_editcurrent = get_editcurrent()
+    if side.startswith('review'):
+        current_editcurrent = get_editcurrent()
 
-    if mw.reviewer.triggerObscure and current_editcurrent:
-        if side == 'reviewQuestion':
-            current_note = card.note()
+        if mw.reviewer.triggerObscure and current_editcurrent:
+            if side == 'reviewQuestion':
+                current_note = card.note()
 
-            if current_editcurrent.editor.note != current_note:
-                current_editcurrent.setNote(current_note)
+                if current_editcurrent.editor.note != current_note:
+                    current_editcurrent.setNote(current_note)
 
-            current_editcurrent.obscureEditor()
+                current_editcurrent.obscureEditor()
 
-        elif side == 'reviewAnswer':
-            current_editcurrent.unobscureEditor()
+            elif side == 'reviewAnswer':
+                current_editcurrent.unobscureEditor()
 
-    mw.reviewer.triggerObscure = True
+        mw.reviewer.triggerObscure = True
 
     return content
 
