@@ -26,90 +26,15 @@ class PersistentEditor(Editor):
         if self.mw.reviewer.state == 'question':
             self.web.eval('PersistentEditor.obscure()')
 
-    def unobscure(self):
-        self.web.eval(f'PersistentEditor.unobscureField({self.currentField})')
+    def unobscure(self, field):
+        self.web.eval(f'PersistentEditor.unobscureField({field})')
 
     def unobscureAll(self):
         self.web.eval('PersistentEditor.unobscure()')
 
-    def saveNowIfNecessary(self, callback, keepFocus=False):
-        # avoid constant blinking on hover
-        if hasattr(self, 'markChanged') and self.markChanged:
-            self.saveNow(callback, keepFocus)
-
-    # overriden methods
-
-    def mungeHTML(self, txt):
-        return super().mungeHTML(txt.replace('<div class="coverup"></div>', ''))
-
-    def saveNow(self, callback, keepFocus=False):
-        super().saveNow(callback, keepFocus)
-        self.markChanged = False
-
-    def onBridgeCmd(self, cmd) -> None:
-        if not self.note:
-            # shutdown
-            return
-
-        # focus lost or key/button pressed?
-        if cmd.startswith("blur") or cmd.startswith("key"):
-            (type, ord, nid, txt) = cmd.split(":", 3)
-            ord = int(ord)
-
-            try:
-                nid = int(nid)
-            except ValueError:
-                nid = 0
-            if nid != self.note.id:
-                print("ignored late blur")
-                return
-            txt = self.mungeHTML(txt)
-            # misbehaving apps may include a null byte in the text
-            txt = txt.replace("\x00", "")
-            # reverse the url quoting we added to get images to display
-            txt = self.mw.col.media.escapeImages(txt, unescape=True)
-            self.note.fields[ord] = txt
-            if not self.addMode:
-                self.note.flush()
-                self.mw.requireReset()
-            if type == "blur":
-                self.currentField = None
-
-                # NOTE diverge from Anki
-                self.maybeObscureAll()
-
-                # run any filters
-                if gui_hooks.editor_did_unfocus_field(False, self.note, ord):
-                    # something updated the note; update it after a subsequent focus
-                    # event has had time to fire
-                    self.mw.progress.timer(100, self.loadNoteKeepingFocus, False)
-                else:
-                    self.checkValid()
-            else:
-                gui_hooks.editor_did_fire_typing_timer(self.note)
-
-                # NOTE diverge from Anki
-                self.markChanged = True
-                self.mw.progress.timer(10, self.redrawMainWindow, False)
-
-                self.checkValid()
-        # focused into field?
-        elif cmd.startswith("focus"):
-            (type, num) = cmd.split(":", 1)
-            self.currentField = int(num)
-
-            # NOTE diverge from Anki
-            self.unobscure()
-
-            gui_hooks.editor_did_focus_field(self.note, self.currentField)
-        elif cmd in self._links:
-            self._links[cmd](self)
-        else:
-            print("uncaught cmd", cmd)
-
 def alter_on_html(cuts, editor):
     if isinstance(editor.parentWindow, EditCurrent):
-        def onHtmlEdit_persistent():
+        def on_html_edit_persistent():
             field = editor.currentField
 
             def callback():
@@ -126,10 +51,7 @@ def alter_on_html(cuts, editor):
             return
 
         del cuts[cuts.index(result)]
-        cuts.append(('Ctrl+Shift+X', onHtmlEdit_persistent))
-
-        # NOTE the markChanged property will identify this editor as being an editor within an editcurrent
-        editor.markChanged = False
+        cuts.append(('Ctrl+Shift+X', on_html_edit_persistent))
 
 def setup_editor(editor):
     if isinstance(editor.parentWindow, EditCurrent):

@@ -57,11 +57,10 @@ class PersistentEditCurrent(EditCurrent):
                 self.editor.redrawMainWindow()
                 self.obscureEditor()
 
-            self.editor.saveNowIfNecessary(after, False)
+            self.editor.saveNow(after, False)
             return False
 
-        else:
-            return super().eventFilter(obj, event)
+        return super().eventFilter(obj, event)
 
     def obscureEditor(self):
         self.editor.maybeObscureAll()

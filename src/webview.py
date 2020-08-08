@@ -8,12 +8,17 @@ from aqt.gui_hooks import (
 
 def persistent_functions(handled, message, context: Editor):
     if isinstance(context, Editor) and isinstance(context.parentWindow, EditCurrent):
-        if message.startswith('key'):
-            pass
-        elif message.startswith('focus'):
-            pass
-        elif message.startswith('blur'):
-            pass
+        cmd = message.split(':', 1)
+
+        if cmd[0] == 'focus':
+            focused_field = cmd[1]
+            context.unobscure(focused_field)
+
+        elif cmd[0] == 'key':
+            context.mw.progress.timer(10, context.redrawMainWindow, False)
+
+        elif cmd[0] == 'blur':
+            context.maybeObscureAll()
 
     return handled
 
