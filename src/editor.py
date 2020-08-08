@@ -37,13 +37,7 @@ class PersistentEditor(Editor):
         if hasattr(self, 'markChanged') and self.markChanged:
             self.saveNow(callback, keepFocus)
 
-    # override methods
-
-    def _onFields(self):
-        from aqt.fields import FieldDialog
-
-        # fails with AvoidRequireReset
-        FieldDialog(mw, self.note.model(), parent=self.parentWindow)
+    # overriden methods
 
     def mungeHTML(self, txt):
         return super().mungeHTML(txt.replace('<div class="coverup"></div>', ''))

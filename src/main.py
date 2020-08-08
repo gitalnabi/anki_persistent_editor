@@ -1,22 +1,24 @@
-from aqt import dialogs, mw
+from aqt import mw
 from aqt.main import AnkiQt
+from aqt.editcurrent import EditCurrent
+
 from anki.hooks import wrap
 
-# https://stackoverflow.com/questions/1443129/completely-wrap-an-object-in-python
-class AvoidRequireReset(AnkiQt):
-    def __init__(self, baseObject):
-        self.__class__ = type(
-            baseObject.__class__.__name__,
-            (self.__class__, baseObject.__class__),
-            {},
-        )
-        self.__dict__ = baseObject.__dict__
+def do_not_require_reset(interactive_state):
+    active_window = mw.app.activeWindow()
 
-    def requireReset(self, modal=False):
-        pass
+    if isinstance(active_window, EditCurrent) or (isinstance(active_window, AnkiQt) and mw.state == 'review'):
+        return False
 
-def on_persistent_edit_current(mw, _old):
-    dialogs.open("EditCurrent", AvoidRequireReset(mw))
+    return interactive_state 
+
+def require_reset(self, modal=False, _old=None):
+    "Signal queue needs to be rebuilt when edits are finished or by user."
+    self.autosave()
+    self.resetModal = modal
+
+    if do_not_require_reset(self.interactiveState()):
+        self.moveToState("resetRequired")
 
 def init_mw():
-    AnkiQt.onEditCurrent = wrap(AnkiQt.onEditCurrent, on_persistent_edit_current, 'around')
+    AnkiQt.requireReset = wrap(AnkiQt.requireReset, require_reset, pos='around')
