@@ -1,15 +1,3 @@
 = Anki Persistent Editor
 
 This add-on will make the editor window for review persistent.
-
-image::https://media.githubusercontent.com/media/hgiesel/anki_persistent_editor/master/images/demo.gif[Demo gif]
-
-There are two important shortcuts:
-- `e` will trigger the editor window.
-  This is identical to the standard Anki behavior.
-  Clicking `e` again will bring focus to the editor window. 
-
-- `c` will flip the card, going to the front, if you're on the back and vice versa.
-  Before creating this add-on, I typically used the editor shortcut to go back to the front of the card.
-  This is no longer possible, the editor shortcut won't change which side of the card is displayed.
-  For this reason, you can this shortcut to have the old functionality.
