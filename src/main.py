@@ -13,12 +13,9 @@ def do_not_require_from_editcurrent(self, _old):
 
     return _old(self)
 
-def persistent_review_state(self, oldstate, _old):
-    if oldstate == 'persistentReview':
-        self.reviewer.trigger_obscure = False
-
-    _old(self, oldstate)
+def persistent_review_state(self, oldstate):
+    self.reviewer.trigger_obscure = False
 
 def init_mw():
     AnkiQt.interactiveState = wrap(AnkiQt.interactiveState, do_not_require_from_editcurrent, pos='around')
-    AnkiQt._reviewState = wrap(AnkiQt._reviewState, persistent_review_state, pos='around')
+    AnkiQt._reviewState = wrap(AnkiQt._reviewState, persistent_review_state, pos='before')

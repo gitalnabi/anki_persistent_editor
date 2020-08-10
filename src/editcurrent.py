@@ -32,9 +32,6 @@ def persistent_show(self):
 def reshow(self, mw, _old):
     self.show()
 
-def change_mw_state(self):
-    self.mw.state = 'persistentReview'
-
 def eventFilter(self, obj, event):
     if event.type() == QEvent.Leave and self.mw.reviewer.state == 'question':
         def after():
@@ -52,5 +49,4 @@ def init_editcurrent():
 
     EditCurrent.show = persistent_show
     EditCurrent.reopen = wrap(EditCurrent.reopen, reshow, pos='around')
-    EditCurrent._saveAndClose = wrap(EditCurrent._saveAndClose, change_mw_state, pos='before')
     EditCurrent.eventFilter = eventFilter
