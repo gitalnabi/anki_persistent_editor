@@ -1,3 +1,4 @@
 build/*
 *ankiaddon
 meta.json
+__pycache__
