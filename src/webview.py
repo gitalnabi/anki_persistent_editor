@@ -6,8 +6,8 @@ from aqt.gui_hooks import (
     webview_did_receive_js_message,
 )
 
-from .editor import unobscure, maybe_obscure_all
-from .reviewer import redraw_reviewer
+from .editor_helper import maybe_obscure_all, unobscure
+from .reviewer_helper import redraw_reviewer
 
 def persistent_functions(handled, message, context: Editor):
     if isinstance(context, Editor) and isinstance(context.parentWindow, EditCurrent):

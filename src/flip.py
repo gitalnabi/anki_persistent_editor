@@ -1,7 +1,7 @@
 from aqt import mw
 from aqt.gui_hooks import state_shortcuts_will_change
 
-from .reviewer import toggle_reviewer
+from .reviewer_helper import toggle_reviewer
 
 def flip_card():
     toggle_reviewer(mw.reviewer)

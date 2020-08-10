@@ -6,17 +6,8 @@ from aqt.editcurrent import EditCurrent
 from aqt.utils import restoreGeom, saveGeom, tooltip
 from aqt.gui_hooks import editor_did_init, editor_did_init_shortcuts
 
-from .reviewer import refresh_reviewer, redraw_reviewer
-
-def maybe_obscure_all(editor):
-    if editor.mw.reviewer.state == 'question':
-        editor.web.eval('PersistentEditor.obscure()')
-
-def unobscure(editor, field):
-    editor.web.eval(f'PersistentEditor.unobscureField({field})')
-
-def unobscure_all(editor):
-    editor.web.eval('PersistentEditor.unobscure()')
+from .editor_helper import maybe_obscure_all
+from .reviewer_helper import refresh_reviewer, redraw_reviewer
 
 def alter_on_html(cuts, editor):
     if isinstance(editor.parentWindow, EditCurrent):

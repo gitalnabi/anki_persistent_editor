@@ -10,34 +10,7 @@ from aqt.gui_hooks import (
     webview_will_set_content,
 )
 
-def toggle_reviewer(reviewer):
-    state = reviewer.state
-
-    if state == 'question':
-        reviewer._getTypedAnswer()
-
-    elif state == 'answer':
-        reviewer._showQuestion()
-
-def refresh_reviewer(reviewer):
-    state = reviewer.state
-
-    if state == 'question':
-        reviewer._showQuestion()
-
-    elif state == 'answer':
-        reviewer._getTypedAnswer()
-
-def redraw_reviewer(reviewer):
-    # Maybe reviewer already finished
-    if reviewer.card is None:
-        return
-
-    # Trigger redrawing of mw without losing focus
-    reviewer.card.load()
-    reviewer.triggerObscure = False
-
-    refresh_reviewer(reviewer)
+from .editor_helper import maybe_obscure_all, unobscure_all
 
 def get_editcurrent():
     return dialogs._dialogs['EditCurrent'][1]
@@ -47,16 +20,18 @@ def obscure_editcurrent(content, card, side: Literal['reviewAnswer', 'reviewQues
         current_editcurrent = get_editcurrent()
 
         if mw.reviewer.triggerObscure and current_editcurrent:
+            current_editor = current_editcurrent.editor
+
             if side == 'reviewQuestion':
                 current_note = card.note()
 
-                if current_editcurrent.editor.note != current_note:
-                    current_editcurrent.setNote(current_note)
+                if current_editor.note != current_note:
+                    current_editor.setNote(current_note)
 
-                current_editcurrent.obscureEditor()
+                maybe_obscure_all(current_editor)
 
             elif side == 'reviewAnswer':
-                current_editcurrent.unobscureEditor()
+                unobscure_all(current_editor)
 
         mw.reviewer.triggerObscure = True
 

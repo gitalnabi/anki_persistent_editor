@@ -12,8 +12,8 @@ base_path = f'/_addons/{addon_package}/web'
 
 mw.addonManager.setWebExports(__name__, r'(web|icons)/.*\.(js|css|png)')
 
-from .editor import maybe_obscure_all, unobscure_all
-from .reviewer import redraw_reviewer
+from .editor_helper import maybe_obscure_all, unobscure_all
+from .reviewer_helper import redraw_reviewer
 
 class PersistentEditCurrent(EditCurrent):
     def __init__(self, mw) -> None:
@@ -34,7 +34,7 @@ class PersistentEditCurrent(EditCurrent):
         # NOTE diverge from Anki
         if self.mw.reviewer.state == 'question':
             self.editor.setNote(self.mw.reviewer.card.note())
-            self.obscureEditor()
+            maybe_obscure_all(self.editor)
         else:
             self.editor.setNote(self.mw.reviewer.card.note(), focusTo=0)
         # NOTE end diverge
@@ -50,25 +50,16 @@ class PersistentEditCurrent(EditCurrent):
     def reopen(self, mw):
         self.show()
 
-    def setNote(self, note):
-        self.editor.setNote(note)
-
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Leave and self.mw.reviewer.state == 'question':
             def after():
                 redraw_reviewer(self.mw.reviewer)
-                self.obscureEditor()
+                maybe_obscure_all(self.editor)
 
             self.editor.saveNow(after, False)
             return False
 
         return super().eventFilter(obj, event)
-
-    def obscureEditor(self):
-        maybe_obscure_all(self.editor)
-
-    def unobscureEditor(self):
-        unobscure_all(self.editor)
 
     def _saveAndClose(self) -> None:
         gui_hooks.state_did_reset.remove(self.onReset)
