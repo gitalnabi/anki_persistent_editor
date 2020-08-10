@@ -6,7 +6,8 @@ from aqt.gui_hooks import (
     webview_did_receive_js_message,
 )
 
-from .editor import unobscure, redraw_main_window, maybe_obscure_all
+from .editor import unobscure, maybe_obscure_all
+from .reviewer import redraw_reviewer
 
 def persistent_functions(handled, message, context: Editor):
     if isinstance(context, Editor) and isinstance(context.parentWindow, EditCurrent):
@@ -17,7 +18,7 @@ def persistent_functions(handled, message, context: Editor):
             unobscure(context, focused_field)
 
         elif cmd[0] == 'key':
-            context.mw.progress.timer(10, lambda: redraw_main_window(context), False)
+            context.mw.progress.timer(10, lambda: redraw_reviewer(context.mw.reviewer), False)
 
         elif cmd[0] == 'blur':
             maybe_obscure_all(context)

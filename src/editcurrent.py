@@ -12,7 +12,8 @@ base_path = f'/_addons/{addon_package}/web'
 
 mw.addonManager.setWebExports(__name__, r'(web|icons)/.*\.(js|css|png)')
 
-from .editor import redraw_main_window, maybe_obscure_all, unobscure_all
+from .editor import maybe_obscure_all, unobscure_all
+from .reviewer import redraw_reviewer
 
 class PersistentEditCurrent(EditCurrent):
     def __init__(self, mw) -> None:
@@ -55,7 +56,7 @@ class PersistentEditCurrent(EditCurrent):
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Leave and self.mw.reviewer.state == 'question':
             def after():
-                redraw_main_window(self.editor)
+                redraw_reviewer(self.mw.reviewer)
                 self.obscureEditor()
 
             self.editor.saveNow(after, False)

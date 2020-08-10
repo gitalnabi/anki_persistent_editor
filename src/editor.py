@@ -6,20 +6,7 @@ from aqt.editcurrent import EditCurrent
 from aqt.utils import restoreGeom, saveGeom, tooltip
 from aqt.gui_hooks import editor_did_init, editor_did_init_shortcuts
 
-from .reviewer import refresh_reviewer
-
-def redraw_main_window(editor):
-    reviewer = editor.mw.reviewer
-
-    # Maybe reviewer already finished
-    if reviewer.card is None:
-        return
-
-    # Trigger redrawing of mw without losing focus
-    reviewer.card.load()
-    reviewer.triggerObscure = False
-
-    refresh_reviewer(reviewer)
+from .reviewer import refresh_reviewer, redraw_reviewer
 
 def maybe_obscure_all(editor):
     if editor.mw.reviewer.state == 'question':
@@ -40,7 +27,7 @@ def alter_on_html(cuts, editor):
                 nonlocal field
                 editor._onHtmlEdit(field)
                 maybe_obscure_all(editor)
-                redraw_main_window(editor)
+                redraw_reviewer(editor.mw.reviewer)
 
             editor.saveNow(callback)
 
@@ -54,7 +41,7 @@ def alter_on_html(cuts, editor):
 
 def setup_editor(editor):
     if isinstance(editor.parentWindow, EditCurrent):
-        qconnect(editor.tags.lostFocus, lambda: redraw_main_window(editor))
+        qconnect(editor.tags.lostFocus, lambda: redraw_reviewer(editor.mw.reviewer))
 
 def init_editor():
     # is executed before editor_did_init
