@@ -11,7 +11,7 @@ def do_not_require_from_editcurrent(self, _old):
             isinstance(active_window, EditCurrent)):
         return False
 
-    return _old()
+    return _old(self)
 
 def init_mw():
     AnkiQt.interactiveState = wrap(AnkiQt.interactiveState, do_not_require_from_editcurrent, pos='around')
