@@ -1,13 +1,13 @@
-from typing import Union, Literal
+from typing import Literal
 
 from aqt import dialogs, mw
 from aqt.reviewer import Reviewer
 from aqt.gui_hooks import (
-    reviewer_will_end,
-    reviewer_did_answer_card,
-    reviewer_did_show_question,
     card_will_show,
     webview_will_set_content,
+    reviewer_did_show_question,
+    reviewer_did_answer_card,
+    reviewer_will_end,
 )
 
 from .editor_helper import maybe_obscure_all, unobscure_all
@@ -37,14 +37,9 @@ def obscure_editcurrent(content, card, side: Literal['reviewAnswer', 'reviewQues
 
     return content
 
-def close_editcurrent():
-    current_editcurrent = get_editcurrent()
-
-    if current_editcurrent:
-        current_editcurrent.saveAndClose()
-
 def setup_reviewer(web_content, context):
-    if isinstance(context, Reviewer):
+    # only set on first init of reviewer, not on reset
+    if isinstance(context, Reviewer) and not hasattr(context, 'trigger_obscure'):
         context.trigger_obscure = True
 
 def stop_fading_on_question(card):
@@ -53,10 +48,16 @@ def stop_fading_on_question(card):
 def start_fading_again(reviewer, card, ease):
     reviewer.web.eval('qFade = 100')
 
+def close_editcurrent():
+    current_editcurrent = get_editcurrent()
+
+    if current_editcurrent:
+        current_editcurrent.saveAndClose()
+
 def init_reviewer():
     card_will_show.append(obscure_editcurrent)
-    reviewer_will_end.append(close_editcurrent)
     webview_will_set_content.append(setup_reviewer)
 
     reviewer_did_show_question.append(stop_fading_on_question)
     reviewer_did_answer_card.append(start_fading_again)
+    reviewer_will_end.append(close_editcurrent)

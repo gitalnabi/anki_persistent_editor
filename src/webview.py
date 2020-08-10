@@ -1,10 +1,7 @@
-from aqt import mw
 from aqt.editor import Editor
 from aqt.editcurrent import EditCurrent
 
-from aqt.gui_hooks import (
-    webview_did_receive_js_message,
-)
+from aqt.gui_hooks import webview_did_receive_js_message
 
 from .editor_helper import maybe_obscure_all, unobscure
 from .reviewer_helper import redraw_reviewer

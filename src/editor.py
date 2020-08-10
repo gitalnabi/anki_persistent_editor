@@ -1,13 +1,9 @@
-from aqt import mw, dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButtonBox
 from aqt.qt import qconnect
-from aqt.editor import Editor
 from aqt.editcurrent import EditCurrent
-
-from aqt.utils import restoreGeom, saveGeom, tooltip
 from aqt.gui_hooks import editor_did_init, editor_did_init_shortcuts
 
 from .editor_helper import maybe_obscure_all
-from .reviewer_helper import refresh_reviewer, redraw_reviewer
+from .reviewer_helper import redraw_reviewer
 
 def alter_on_html(cuts, editor):
     if isinstance(editor.parentWindow, EditCurrent):
