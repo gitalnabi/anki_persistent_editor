@@ -33,8 +33,7 @@ def obscure_editcurrent(content, card, side: Literal['reviewAnswer', 'reviewQues
         elif side == 'reviewAnswer':
             unobscure_all(current_editor)
 
-        else:
-            mw.reviewer.do_not_reload_editor_if_question = False
+        mw.reviewer.do_not_reload_editor_if_question = False
 
     return content
 
