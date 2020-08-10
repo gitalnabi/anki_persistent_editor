@@ -1,4 +1,6 @@
-def maybe_obscure_all(editor):
+from aqt.editcurrent import EditCurrent
+
+def obscure_if_question(editor):
     if editor.mw.reviewer.state == 'question':
         editor.web.eval('PersistentEditor.obscure()')
 

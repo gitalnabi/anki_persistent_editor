@@ -24,9 +24,9 @@ def redraw_reviewer(reviewer):
         return
 
     try:
-        # Trigger redrawing of mw without losing focus
         reviewer.card.load()
-        reviewer.trigger_obscure = False
+        # Skip obscuring of EditCurrent
+        reviewer.do_not_reload_editor_if_question = True
 
         refresh_reviewer(reviewer)
 

@@ -2,7 +2,7 @@ from aqt.qt import qconnect
 from aqt.editcurrent import EditCurrent
 from aqt.gui_hooks import editor_did_init, editor_did_init_shortcuts
 
-from .editor_helper import maybe_obscure_all
+from .editor_helper import obscure_if_question
 from .reviewer_helper import redraw_reviewer
 
 def alter_on_html(cuts, editor):
@@ -13,7 +13,7 @@ def alter_on_html(cuts, editor):
             def callback():
                 nonlocal field
                 editor._onHtmlEdit(field)
-                maybe_obscure_all(editor)
+                obscure_if_question(editor)
                 redraw_reviewer(editor.mw.reviewer)
 
             editor.saveNow(callback)

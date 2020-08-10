@@ -4,7 +4,7 @@ from aqt.gui_hooks import webview_will_set_content
 
 from anki.hooks import wrap
 
-from .editor_helper import maybe_obscure_all
+from .editor_helper import obscure_if_question
 from .reviewer_helper import redraw_reviewer
 
 addon_package = mw.addonManager.addonFromModule(__name__)
@@ -27,7 +27,7 @@ def persistent_show(self):
 
     if self.mw.reviewer.state == 'question':
         self.editor.loadNote()
-        maybe_obscure_all(self.editor)
+        obscure_if_question(self.editor)
 
 def reshow(self, mw, _old):
     self.show()
@@ -36,10 +36,11 @@ def eventFilter(self, obj, event):
     if event.type() == QEvent.Leave and self.mw.reviewer.state == 'question':
         def after():
             redraw_reviewer(self.mw.reviewer)
-            maybe_obscure_all(self.editor)
+            obscure_if_question(self.editor)
 
         if self.editor.web:
             self.editor.saveNow(after, False)
+
         return False
 
     return super(EditCurrent, self).eventFilter(obj, event)

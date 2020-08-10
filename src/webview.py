@@ -3,7 +3,7 @@ from aqt.editcurrent import EditCurrent
 
 from aqt.gui_hooks import webview_did_receive_js_message
 
-from .editor_helper import maybe_obscure_all, unobscure
+from .editor_helper import obscure_if_question, unobscure
 from .reviewer_helper import redraw_reviewer
 
 def persistent_functions(handled, message, context: Editor):
@@ -18,7 +18,7 @@ def persistent_functions(handled, message, context: Editor):
             context.mw.progress.timer(10, lambda: redraw_reviewer(context.mw.reviewer), False)
 
         elif cmd[0] == 'blur':
-            maybe_obscure_all(context)
+            obscure_if_question(context)
 
     return handled
 
