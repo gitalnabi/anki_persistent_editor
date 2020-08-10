@@ -19,7 +19,7 @@ def obscure_editcurrent(content, card, side: Literal['reviewAnswer', 'reviewQues
     if side.startswith('review'):
         current_editcurrent = get_editcurrent()
 
-        if mw.reviewer.triggerObscure and current_editcurrent:
+        if mw.reviewer.trigger_obscure and current_editcurrent:
             current_editor = current_editcurrent.editor
 
             if side == 'reviewQuestion':
@@ -33,7 +33,7 @@ def obscure_editcurrent(content, card, side: Literal['reviewAnswer', 'reviewQues
             elif side == 'reviewAnswer':
                 unobscure_all(current_editor)
 
-        mw.reviewer.triggerObscure = True
+        mw.reviewer.trigger_obscure = True
 
     return content
 
@@ -45,7 +45,7 @@ def close_editcurrent():
 
 def setup_reviewer(web_content, context):
     if isinstance(context, Reviewer):
-        context.triggerObscure = True
+        context.trigger_obscure = True
 
 def stop_fading_on_question(card):
     mw.reviewer.web.eval('qFade = 0')

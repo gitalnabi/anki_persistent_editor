@@ -1,3 +1,5 @@
+from anki.rsbackend import NotFoundError
+
 def toggle_reviewer(reviewer):
     state = reviewer.state
 
@@ -21,8 +23,16 @@ def redraw_reviewer(reviewer):
     if reviewer.card is None:
         return
 
-    # Trigger redrawing of mw without losing focus
-    reviewer.card.load()
-    reviewer.triggerObscure = False
+    try:
+        # Trigger redrawing of mw without losing focus
+        reviewer.card.load()
+        reviewer.trigger_obscure = False
 
-    refresh_reviewer(reviewer)
+        refresh_reviewer(reviewer)
+
+    except NotFoundError:
+        # card was deleted (probably in browser)
+        # maybe something nicer can be done here:
+        # - completely hide fields ?
+        # - automatically close editcurrent ?
+        pass
