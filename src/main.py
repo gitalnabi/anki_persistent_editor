@@ -4,21 +4,14 @@ from aqt.editcurrent import EditCurrent
 
 from anki.hooks import wrap
 
-def do_not_require_reset(interactive_state):
+def do_not_require_from_editcurrent(self, _old):
     active_window = mw.app.activeWindow()
 
-    if isinstance(active_window, EditCurrent) or (isinstance(active_window, AnkiQt) and mw.state == 'review'):
+    if ((isinstance(active_window, AnkiQt) and mw.state == 'review') or
+            isinstance(active_window, EditCurrent)):
         return False
 
-    return interactive_state 
-
-def require_reset(self, modal=False, _old=None):
-    "Signal queue needs to be rebuilt when edits are finished or by user."
-    self.autosave()
-    self.resetModal = modal
-
-    if do_not_require_reset(self.interactiveState()):
-        self.moveToState("resetRequired")
+    return _old()
 
 def init_mw():
-    AnkiQt.requireReset = wrap(AnkiQt.requireReset, require_reset, pos='around')
+    AnkiQt.interactiveState = wrap(AnkiQt.interactiveState, do_not_require_from_editcurrent, pos='around')
