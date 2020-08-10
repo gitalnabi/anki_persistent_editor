@@ -3,6 +3,7 @@ from aqt import mw, dialogs, gui_hooks, Qt, QDialog, QKeySequence, QDialogButton
 from aqt.qt import qconnect
 from aqt.utils import restoreGeom, saveGeom
 from aqt.editcurrent import EditCurrent
+from aqt.editor import Editor
 
 from aqt.gui_hooks import webview_will_set_content
 
@@ -11,7 +12,7 @@ base_path = f'/_addons/{addon_package}/web'
 
 mw.addonManager.setWebExports(__name__, r'(web|icons)/.*\.(js|css|png)')
 
-from .editor import PersistentEditor
+from .editor import redraw_main_window, maybe_obscure_all, unobscure_all
 
 class PersistentEditCurrent(EditCurrent):
     def __init__(self, mw) -> None:
@@ -26,7 +27,7 @@ class PersistentEditCurrent(EditCurrent):
         self.form.buttonBox.button(QDialogButtonBox.Close).setShortcut(
             QKeySequence("Ctrl+Return")
         )
-        self.editor = PersistentEditor(self.mw, self.form.fieldsArea, self) # NOTE diverge from Anki
+        self.editor = Editor(self.mw, self.form.fieldsArea, self)
         self.editor.card = self.mw.reviewer.card
 
         # NOTE diverge from Anki
@@ -54,7 +55,7 @@ class PersistentEditCurrent(EditCurrent):
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Leave and self.mw.reviewer.state == 'question':
             def after():
-                self.editor.redrawMainWindow()
+                redraw_main_window(self.editor)
                 self.obscureEditor()
 
             self.editor.saveNow(after, False)
@@ -63,10 +64,10 @@ class PersistentEditCurrent(EditCurrent):
         return super().eventFilter(obj, event)
 
     def obscureEditor(self):
-        self.editor.maybeObscureAll()
+        maybe_obscure_all(self.editor)
 
     def unobscureEditor(self):
-        self.editor.unobscureAll()
+        unobscure_all(self.editor)
 
     def _saveAndClose(self) -> None:
         gui_hooks.state_did_reset.remove(self.onReset)
