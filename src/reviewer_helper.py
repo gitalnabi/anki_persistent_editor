@@ -1,21 +1,25 @@
 from anki.rsbackend import NotFoundError
 
-def toggle_reviewer(reviewer):
+def currently_shows_question(reviewer):
     state = reviewer.state
 
     if state == 'question':
-        reviewer._getTypedAnswer()
-
+        return True
     elif state == 'answer':
+        return False
+
+    raise Exception('Should never happen: Reviewer has invalid state')
+
+def toggle_reviewer(reviewer):
+    if currently_shows_question(reviewer):
+        reviewer._getTypedAnswer()
+    else:
         reviewer._showQuestion()
 
 def refresh_reviewer(reviewer):
-    state = reviewer.state
-
-    if state == 'question':
+    if currently_shows_question(reviewer):
         reviewer._showQuestion()
-
-    elif state == 'answer':
+    else:
         reviewer._getTypedAnswer()
 
 def redraw_reviewer(reviewer):

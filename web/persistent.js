@@ -13,17 +13,35 @@ var PersistentEditor = {
     return obscureDiv
   },
 
-  obscure: () => {
-    const fields = PersistentEditor.getFields()
+  appendObscureDiv: (field, obscureDiv) => {
+    if (!field.querySelector('.coverup')) {
+      field.appendChild(obscureDiv)
+    }
+  },
 
-    for (const field of fields) {
-      field.appendChild(PersistentEditor.getObscureDiv())
+  obscure: () => {
+    if (PersistentEditor.shouldBeFocused !== null) {
+      // a blur caused by context menu
+      const field = PersistentEditor.shouldBeFocused
+
+      PersistentEditor.shouldBeFocused = null
+      PersistentEditor.unobscureField(field)
+      // another obscure is triggered from within unobscureField
+    }
+
+    else {
+      // all other blurs
+      const fields = PersistentEditor.getFields()
+
+      for (const field of fields) {
+        PersistentEditor.appendObscureDiv(field, PersistentEditor.getObscureDiv())
+      }
     }
   },
 
   obscureField: (index) => {
     const field = PersistentEditor.getField(index)
-    field.appendChild(PersistentEditor.getObscureDiv())
+    PersistentEditor.appendObscureDiv(field, PersistentEditor.getObscureDiv())
   },
 
   filterObscureDivs: (element) => {
@@ -42,14 +60,25 @@ var PersistentEditor = {
   },
 
   unobscureField: (index) => {
+    PersistentEditor.obscure()
+
     const field = PersistentEditor.getField(index)
     PersistentEditor.filterObscureDivs(field)
   },
 
-  appendStyleTag: (input) => {
-    var styleSheet = document.createElement('style')
-    styleSheet.type = 'text/css'
-    styleSheet.innerHTML = input
-    globalThis.document.head.appendChild(styleSheet)
+  saveSelectionField: () => {
+    const selection = window.getSelection()
+
+    const anchor = selection.anchorNode
+    const fields = Array.from(document.querySelectorAll('.field'))
+
+    for (const field of fields) {
+      if (field.contains(anchor)) {
+        const num = field.id.slice(1)
+        PersistentEditor.shouldBeFocused = num
+      }
+    }
   },
+
+  shouldBeFocused: null,
 }

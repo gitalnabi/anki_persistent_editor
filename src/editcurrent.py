@@ -37,7 +37,9 @@ def eventFilter(self, obj, event):
     if event.type() == QEvent.Leave and self.mw.reviewer.state == 'question':
         def after():
             redraw_reviewer(self.mw.reviewer)
-            obscure_if_question(self.editor)
+            if not getattr(self, 'do_not_overwrite', False):
+                self.do_not_overwrite = False
+                obscure_if_question(self.editor)
 
         if self.editor.web:
             self.editor.saveNow(after, False)

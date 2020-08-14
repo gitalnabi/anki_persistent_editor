@@ -12,5 +12,5 @@ zip -r "$DIR/build/$addon_id.ankiaddon" \
   "__init__.py" \
   "src/"*".py" \
   "gui/"*".py" \
-  "gui/custom/"*".py" \
+  "gui/forms/"*".py" \
   "web/"* \
