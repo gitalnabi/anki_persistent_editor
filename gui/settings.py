@@ -1,6 +1,6 @@
 from aqt import QDialog, QLayout
 
-from ..settings_ui import Ui_Settings
+from .forms.settings_ui import Ui_Settings
 
 class Settings(QDialog):
     def __init__(self, mw, callback):

@@ -1,6 +1,7 @@
 from aqt import mw
 
-from ..gui.custom.settings import Settings
+from ..gui.settings import Settings
+
 from .utils import flip_keyword
 
 def set_settings(flip_shortcut):
