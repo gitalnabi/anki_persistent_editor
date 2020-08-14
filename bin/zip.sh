@@ -1,6 +1,4 @@
 declare DIR="$(cd "$(dirname "$0")/.." && pwd -P)"
-mkdir -p "$DIR/build"
-
 declare addon_id='persitent_editor'
 
 cd "$DIR"
