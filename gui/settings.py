@@ -1,4 +1,4 @@
-from aqt import QDialog, QLayout
+from aqt import QDialog, QLayout, QKeySequence
 
 from .forms.settings_ui import Ui_Settings
 
@@ -16,10 +16,10 @@ class Settings(QDialog):
         self.layout().setSizeConstraint(QLayout.SetFixedSize)
 
     def setupUi(self, flip_shortcut: str):
-        self.ui.flipShortcut.setText(flip_shortcut)
+        self.ui.flipShortcut.setKeySequence(QKeySequence(flip_shortcut))
 
     def accept(self):
-        flip_shortcut = self.ui.flipShortcut.text()
+        flip_shortcut = self.ui.flipShortcut.keySequence().toString()
 
         self.cb(flip_shortcut)
         super().accept()

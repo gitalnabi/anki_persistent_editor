@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>347</width>
-    <height>111</height>
+    <height>85</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,22 +17,9 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Ze Add Note Id Settings</string>
+   <string>Persistent Editor Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="1" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QLineEdit" name="flipShortcut"/>
-   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="flipLabel">
      <property name="text">
@@ -40,10 +27,16 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="QLabel" name="example">
-     <property name="text">
-      <string>Examples: &quot;C&quot;, &quot;Alt+C&quot;, &quot;Ctrl+Alt+C&quot;</string>
+   <item row="0" column="1">
+    <widget class="QKeySequenceEdit" name="flipShortcut"/>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
