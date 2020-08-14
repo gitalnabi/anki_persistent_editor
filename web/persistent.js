@@ -22,10 +22,10 @@ var PersistentEditor = {
   obscure: () => {
     if (PersistentEditor.shouldBeFocused !== null) {
       // a blur caused by context menu
-      const field = PersistentEditor.shouldBeFocused
+      const index = PersistentEditor.shouldBeFocused
 
       PersistentEditor.shouldBeFocused = null
-      PersistentEditor.unobscureField(field)
+      PersistentEditor.unobscureField(index)
       // another obscure is triggered from within unobscureField
     }
 
