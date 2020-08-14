@@ -3,6 +3,7 @@ from aqt.editcurrent import EditCurrent
 from aqt.gui_hooks import webview_will_set_content
 
 from anki.hooks import wrap
+from anki.lang import _
 
 from .editor_helper import obscure_if_question
 from .reviewer_helper import redraw_reviewer
