@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
+    <width>359</width>
     <height>154</height>
    </rect>
   </property>
@@ -23,7 +23,7 @@
    <item row="3" column="1">
     <widget class="QKeySequenceEdit" name="presentationShortcut">
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;While in presentation mode, the persistent editor will &lt;span style=&quot; font-weight:600;&quot;&gt;not&lt;/span&gt; obscure the fields, when the card is currently showing the frontside of the card. This shortcut can be triggered in the editor. (default: &amp;quot;Ctrl+P&amp;quot;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The &amp;quot;Edit Current&amp;quot; window may be in one of two modes: obscure mode, or presentation mode. While in presentation mode, the persistent editor will &lt;span style=&quot; font-weight:600;&quot;&gt;not&lt;/span&gt; obscure the fields, when the card is currently showing the frontside of the card. This shortcut can be triggered in the editor. (default: &amp;quot;Ctrl+P&amp;quot;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
@@ -37,10 +37,10 @@
    <item row="3" column="0">
     <widget class="QLabel" name="presentationLabel">
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;While in presentation mode, the persistent editor will &lt;span style=&quot; font-weight:600;&quot;&gt;not&lt;/span&gt; obscure the fields, when the card is currently showing the frontside of the card. This shortcut can be triggered in the editor. (default: &amp;quot;Ctrl+P&amp;quot;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The &amp;quot;Edit Current&amp;quot; window may be in one of two modes: obscure mode, or presentation mode. While in presentation mode, the persistent editor will &lt;span style=&quot; font-weight:600;&quot;&gt;not&lt;/span&gt; obscure the fields, when the card is currently showing the frontside of the card. This shortcut can be triggered in the editor. (default: &amp;quot;Ctrl+P&amp;quot;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Shortcut for presentation mode</string>
+      <string>Shortcut for toggling mode</string>
      </property>
     </widget>
    </item>
@@ -57,10 +57,10 @@
    <item row="2" column="0" colspan="2">
     <widget class="QCheckBox" name="presentationCheckBox">
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;While in presentation mode, the persistent editor will &lt;span style=&quot; font-weight:600;&quot;&gt;not&lt;/span&gt; obscure the fields, when the card is currently showing the frontside of the card.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;While in &lt;span style=&quot; font-weight:600;&quot;&gt;obscure mod&lt;/span&gt;e, the persistent editor &lt;span style=&quot; font-weight:600;&quot;&gt;will&lt;/span&gt; obscure the fields, when the card is currently showing the frontside of the card. While in&lt;span style=&quot; font-weight:600;&quot;&gt; presentation mode&lt;/span&gt;, the persistent editor will display the fields normally.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Enable Presentation Mode</string>
+      <string>Start in Presentation Mode</string>
      </property>
     </widget>
    </item>

@@ -6,6 +6,7 @@ from aqt.gui_hooks import (
     state_will_change,
 )
 
+
 def do_not_require_from_editcurrent(should_reset, reason, context):
     return False if (
         reason == ResetReason.EditCurrentInit or

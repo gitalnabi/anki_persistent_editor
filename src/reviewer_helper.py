@@ -1,5 +1,6 @@
 from anki.rsbackend import NotFoundError
 
+
 def currently_shows_question(reviewer):
     state = reviewer.state
 
