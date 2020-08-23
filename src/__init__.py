@@ -12,6 +12,8 @@ from .editor import init_editor
 from .webview import init_webview
 
 def init():
+    mw.addonManager.setWebExports(__name__, r'(web|icons)/.*\.(js|css|png)')
+
     init_mw()
     init_flip_shortcut()
     init_addon_manager()
@@ -21,4 +23,3 @@ def init():
 
     init_editor()
     init_webview()
-

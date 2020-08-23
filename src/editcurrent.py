@@ -7,18 +7,15 @@ from anki.lang import _
 
 from .editor_helper import obscure_if_question
 from .reviewer_helper import redraw_reviewer
+from .utils import base_path
 
-addon_package = mw.addonManager.addonFromModule(__name__)
-base_path = f'/_addons/{addon_package}/web'
-
-mw.addonManager.setWebExports(__name__, r'(web|icons)/.*\.(js|css|png)')
 
 def setup_editcurrent(web_content, context):
     if hasattr(context, 'parentWindow') and isinstance(context.parentWindow, EditCurrent):
         editcurrent = context.parentWindow
 
-        web_content.css.append(f'{base_path}/persistent.css')
-        web_content.js.append(f'{base_path}/persistent.js')
+        web_content.css.append(f'{base_path}/editcurrent.css')
+        web_content.js.append(f'{base_path}/editcurrent.js')
 
         editcurrent.setWindowTitle(_("Persistent Edit Current"))
         editcurrent.installEventFilter(context.parentWindow)

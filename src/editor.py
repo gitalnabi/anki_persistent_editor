@@ -9,6 +9,7 @@ from aqt.gui_hooks import (
 from .editor_helper import obscure_if_question
 from .reviewer_helper import currently_shows_question, redraw_reviewer
 
+
 def alter_on_html(cuts, editor):
     if isinstance(editor.parentWindow, EditCurrent):
         def on_html_edit_persistent():
