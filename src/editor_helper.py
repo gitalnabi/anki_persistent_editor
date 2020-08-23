@@ -11,5 +11,4 @@ def unobscure_if_question(editor, field):
         editor.web.eval(f'PersistentEditor.unobscureField({field})')
 
 def unobscure_all(editor):
-    if not editor.presentation_mode:
-        editor.web.eval('PersistentEditor.unobscure()')
+    editor.web.eval('PersistentEditor.unobscure()')

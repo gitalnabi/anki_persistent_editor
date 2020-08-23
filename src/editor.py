@@ -8,7 +8,7 @@ from aqt.gui_hooks import (
 )
 from aqt.utils import tooltip
 
-from .editor_helper import obscure_if_question
+from .editor_helper import obscure_if_question, unobscure_if_question, unobscure_all
 from .reviewer_helper import currently_shows_question, redraw_reviewer
 from .utils import presentation_mode_keyword, presentation_shortcut_keyword
 
@@ -16,8 +16,14 @@ from .utils import presentation_mode_keyword, presentation_shortcut_keyword
 def toggle_presentation_mode(editor):
     editor.presentation_mode = not editor.presentation_mode
 
-    mode_string = 'presentation' if editor.presentation_mode else 'obscure'
-    tooltip(f'Editor changed to {mode_string} mode', parent=editor.parentWindow)
+    if editor.presentation_mode:
+        unobscure_all(editor)
+        mode_string = 'presentation'
+    else:
+        unobscure_if_question(editor, editor.currentField) if editor.currentField else obscure_if_question(editor)
+        mode_string = 'obscure'
+
+    tooltip(f'Switched to {mode_string} mode', parent=editor.parentWindow)
 
 def alter_on_html(cuts, editor):
     if isinstance(editor.parentWindow, EditCurrent):

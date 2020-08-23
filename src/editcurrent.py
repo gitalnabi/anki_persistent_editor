@@ -31,7 +31,11 @@ def reshow(self, mw, _old):
     self.show()
 
 def eventFilter(self, obj, event):
-    if event.type() == QEvent.Leave and self.mw.reviewer.state == 'question':
+    if (
+        event.type() == QEvent.Leave and
+        self.mw.reviewer.state == 'question' and
+        not self.editor.presentation_mode
+    ):
         def after():
             redraw_reviewer(self.mw.reviewer)
             if not getattr(self, 'do_not_overwrite', False):
