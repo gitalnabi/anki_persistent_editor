@@ -25,10 +25,10 @@ def alter_on_html(cuts, editor):
 
         try:
             result = next(filter(lambda v: v[0] == 'Ctrl+Shift+X', cuts))
+            del cuts[cuts.index(result)]
         except StopIteration:
             return
 
-        del cuts[cuts.index(result)]
         cuts.append(('Ctrl+Shift+X', on_html_edit_persistent))
 
 def setup_editor(editor):
