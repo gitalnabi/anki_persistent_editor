@@ -1,18 +1,16 @@
-from aqt import mw, dialogs
-from aqt.main import AnkiQt
+from aqt import dialogs
+from aqt.main import ResetReason
 from aqt.editcurrent import EditCurrent
-from aqt.gui_hooks import state_will_change
+from aqt.gui_hooks import (
+    main_window_should_require_reset,
+    state_will_change,
+)
 
-from anki.hooks import wrap
-
-def do_not_require_from_editcurrent(self, _old):
-    active_window = mw.app.activeWindow()
-
-    if ((isinstance(active_window, AnkiQt) and mw.state == 'review') or
-            isinstance(active_window, EditCurrent)):
-        return False
-
-    return _old(self)
+def do_not_require_from_editcurrent(should_reset, reason, context):
+    return False if (
+        reason == ResetReason.EditCurrentInit or
+        reason == ResetReason.EditorBridgeCmd and isinstance(context.parentWindow, EditCurrent)
+    ) else should_reset
 
 def close_editcurrent_when_leaving_review(state, oldstate):
     if (
@@ -24,5 +22,5 @@ def close_editcurrent_when_leaving_review(state, oldstate):
         dialogs.markClosed('EditCurrent')
 
 def init_mw():
-    AnkiQt.interactiveState = wrap(AnkiQt.interactiveState, do_not_require_from_editcurrent, pos='around')
+    main_window_should_require_reset.append(do_not_require_from_editcurrent)
     state_will_change.append(close_editcurrent_when_leaving_review)
