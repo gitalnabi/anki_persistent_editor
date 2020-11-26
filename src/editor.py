@@ -18,15 +18,19 @@ def toggle_presentation_mode(editor):
 
     if editor.presentation_mode:
         unobscure_all(editor)
-        mode_string = 'presentation'
+        mode_string = "presentation"
     else:
-        unobscure_if_question(editor, editor.currentField) if editor.currentField else obscure_if_question(editor)
-        mode_string = 'obscure'
+        unobscure_if_question(
+            editor, editor.currentField
+        ) if editor.currentField else obscure_if_question(editor)
+        mode_string = "obscure"
 
-    tooltip(f'Switched to {mode_string} mode', parent=editor.parentWindow)
+    tooltip(f"Switched to {mode_string} mode", parent=editor.parentWindow)
+
 
 def alter_on_html(cuts, editor):
     if isinstance(editor.parentWindow, EditCurrent):
+
         def on_html_edit_persistent():
             field = editor.currentField
 
@@ -39,25 +43,34 @@ def alter_on_html(cuts, editor):
             editor.saveNow(callback)
 
         try:
-            result = next(filter(lambda v: v[0] == 'Ctrl+Shift+X', cuts))
+            result = next(filter(lambda v: v[0] == "Ctrl+Shift+X", cuts))
             del cuts[cuts.index(result)]
         except StopIteration:
             return
 
-        cuts.append(('Ctrl+Shift+X', on_html_edit_persistent))
+        cuts.append(("Ctrl+Shift+X", on_html_edit_persistent))
 
         editor.presentation_mode = mw.pm.profile.get(presentation_mode_keyword, False)
-        cuts.append((mw.pm.profile.get(presentation_shortcut_keyword, 'Ctrl+P'), lambda: toggle_presentation_mode(editor)))
+        cuts.append((
+            mw.pm.profile.get(presentation_shortcut_keyword, "Ctrl+P"),
+            lambda: toggle_presentation_mode(editor),
+            True,
+        ))
+
 
 def setup_editor(editor):
     if isinstance(editor.parentWindow, EditCurrent):
         qconnect(editor.tags.lostFocus, lambda: redraw_reviewer(editor.mw.reviewer))
 
+
 def keep_focus_during_context_menu(webview, menu):
-    if isinstance(webview.editor.parentWindow, EditCurrent) and currently_shows_question(webview.editor.mw.reviewer):
+    if isinstance(
+        webview.editor.parentWindow, EditCurrent
+    ) and currently_shows_question(webview.editor.mw.reviewer):
         # prevents eventFilter to overwrite selection field
         webview.editor.parentWindow.do_not_overwrite = True
-        webview.eval('PersistentEditor.saveSelectionField()')
+        webview.eval("PersistentEditor.saveSelectionField()")
+
 
 def init_editor():
     # is executed before editor_did_init

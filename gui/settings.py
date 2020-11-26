@@ -2,6 +2,7 @@ from aqt import QDialog, QLayout, QKeySequence
 
 from .forms.settings_ui import Ui_Settings
 
+
 class Settings(QDialog):
     def __init__(self, mw, callback):
         super().__init__(parent=mw)
@@ -15,7 +16,9 @@ class Settings(QDialog):
 
         self.layout().setSizeConstraint(QLayout.SetFixedSize)
 
-    def setupUi(self, flip_shortcut: str, presentation_mode: bool, presentation_shortcut: str):
+    def setupUi(
+        self, flip_shortcut: str, presentation_mode: bool, presentation_shortcut: str
+    ):
         self.ui.flipShortcut.setKeySequence(QKeySequence(flip_shortcut))
 
         self.ui.presentationCheckBox.setChecked(presentation_mode)
