@@ -5,6 +5,7 @@ from aqt.gui_hooks import (
     editor_did_init,
     editor_did_init_shortcuts,
     editor_will_show_context_menu,
+    editor_will_load_note,
 )
 from aqt.utils import tooltip
 
@@ -72,8 +73,14 @@ def keep_focus_during_context_menu(webview, menu):
         webview.eval("PersistentEditor.saveSelectionField()")
 
 
+def load_js(js, note, editor):
+    return js + f"PersistentEditor.load(); "
+
+
 def init_editor():
     # is executed before editor_did_init
     editor_did_init_shortcuts.append(alter_on_html)
     editor_did_init.append(setup_editor)
     editor_will_show_context_menu.append(keep_focus_during_context_menu)
+    editor_will_load_note.append(load_js)
+

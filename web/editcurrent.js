@@ -1,21 +1,13 @@
+var removeObscured = (event) => {
+  event.currentTarget.editable.classList.remove("is-obscured")
+  event.currentTarget.editable.focus()
+}
+
 var PersistentEditor = {
-  getField: (index) => document.body.children[2].querySelectorAll('.field')[index],
-  getFields: () => document.body.children[2].querySelectorAll('.field'),
-
-  getObscureDiv: () => {
-    const obscureDiv = document.createElement('div')
-    obscureDiv.classList.add('coverup')
-
-    obscureDiv.addEventListener('click', (event) => {
-      event.target.parentElement.removeChild(event.target)
-    })
-
-    return obscureDiv
-  },
-
-  appendObscureDiv: (field, obscureDiv) => {
-    if (!field.querySelector('.coverup')) {
-      field.appendChild(obscureDiv)
+  obscureEditable: (field) => {
+    if (!field.editingArea.editable.classList.contains("is-obscured")) {
+      field.editingArea.editable.classList.add("is-obscured")
+      field.editingArea.addEventListener("click", removeObscured, { once: true })
     }
   },
 
@@ -31,53 +23,59 @@ var PersistentEditor = {
 
     else {
       // all other blurs
-      const fields = PersistentEditor.getFields()
-
-      for (const field of fields) {
-        PersistentEditor.appendObscureDiv(field, PersistentEditor.getObscureDiv())
-      }
+      forEditorField([], (field) => {
+        PersistentEditor.obscureEditable(field)
+      })
     }
   },
 
   obscureField: (index) => {
-    const field = PersistentEditor.getField(index)
-    PersistentEditor.appendObscureDiv(field, PersistentEditor.getObscureDiv())
+    const field = getEditorField(index)
+    PersistentEditor.obscureEditable(field)
   },
 
-  filterObscureDivs: (element) => {
-      const obscureDivs = element.querySelectorAll('.coverup')
-      for (const od of obscureDivs) {
-        od.parentNode.removeChild(od)
-      }
+  unobscureEditable: (field) => {
+    field.editingArea.editable.classList.remove("is-obscured")
+    field.editingArea.removeEventListener("click", removeObscured)
   },
 
   unobscure: () => {
-    const fields = PersistentEditor.getFields()
-
-    for (const field of fields) {
-      PersistentEditor.filterObscureDivs(field)
-    }
+    forEditorField([], (field) => {
+      PersistentEditor.unobscureEditable(field)
+    })
   },
 
   unobscureField: (index) => {
     PersistentEditor.obscure()
-
-    const field = PersistentEditor.getField(index)
-    PersistentEditor.filterObscureDivs(field)
+    const field = getEditorField(index)
+    PersistentEditor.unobscureEditable(field)
   },
 
   saveSelectionField: () => {
     const selection = window.getSelection()
 
     const anchor = selection.anchorNode
-    const fields = Array.from(document.querySelectorAll('.field'))
-
-    for (const field of fields) {
+    forEditorField([], (field) => {
       if (field.contains(anchor)) {
         const num = field.id.slice(1)
         PersistentEditor.shouldBeFocused = num
       }
-    }
+    })
+  },
+
+  load: () => {
+    forEditorField([], (field) => {
+      if (!field.hasAttribute("has-persistent")) {
+        const style = document.createElement('style');
+        style.textContent = `
+anki-editable.is-obscured {
+  visibility: hidden;
+}`
+
+        field.editingArea.shadowRoot.insertBefore(style, field.editingArea.editable)
+        field.setAttribute("has-persistent", "")
+      }
+    })
   },
 
   shouldBeFocused: null,
