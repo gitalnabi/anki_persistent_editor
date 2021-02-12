@@ -52,11 +52,13 @@ def alter_on_html(cuts, editor):
         cuts.append(("Ctrl+Shift+X", on_html_edit_persistent))
 
         editor.presentation_mode = mw.pm.profile.get(presentation_mode_keyword, False)
-        cuts.append((
-            mw.pm.profile.get(presentation_shortcut_keyword, "Ctrl+P"),
-            lambda: toggle_presentation_mode(editor),
-            True,
-        ))
+        cuts.append(
+            (
+                mw.pm.profile.get(presentation_shortcut_keyword, "Ctrl+P"),
+                lambda: toggle_presentation_mode(editor),
+                True,
+            )
+        )
 
 
 def setup_editor(editor):
@@ -74,7 +76,11 @@ def keep_focus_during_context_menu(webview, menu):
 
 
 def load_js(js, note, editor):
-    return js + f"PersistentEditor.load(); "
+    return (
+        js + f"PersistentEditor.load(); "
+        if isinstance(editor.parentWindow, EditCurrent)
+        else js
+    )
 
 
 def init_editor():
@@ -83,4 +89,3 @@ def init_editor():
     editor_did_init.append(setup_editor)
     editor_will_show_context_menu.append(keep_focus_during_context_menu)
     editor_will_load_note.append(load_js)
-
