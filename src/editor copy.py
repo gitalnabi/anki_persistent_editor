@@ -1,5 +1,5 @@
-from aqt import mw, QEvent
-from aqt.qt import qconnect, QEvent, QObject
+from aqt import mw
+from aqt.qt import qconnect
 from aqt.editcurrent import EditCurrent
 from aqt.gui_hooks import (
     editor_did_init,
@@ -14,7 +14,7 @@ from .utils import presentation_mode_keyword, presentation_shortcut_keyword
 
 
 def toggle_presentation_mode(editor):
-    editor.presentation_mode = not getattr(editor, 'presentation_mode', False)
+    editor.presentation_mode = not editor.presentation_mode
 
     if editor.presentation_mode:
         unobscure_all(editor)
@@ -49,21 +49,9 @@ def alter_on_html(cuts, editor):
         editor.presentation_mode = mw.pm.profile.get(presentation_mode_keyword, False)
         cuts.append((mw.pm.profile.get(presentation_shortcut_keyword, 'Ctrl+P'), lambda: toggle_presentation_mode(editor)))
 
-class FocusEventFilter(QObject):
-    def __init__(self, editor, parent=None):
-        super().__init__(parent)
-        self.editor = editor
-
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.FocusOut:
-            redraw_reviewer(self.editor.mw.reviewer)
-        return False
-
 def setup_editor(editor):
     if isinstance(editor.parentWindow, EditCurrent):
-        editor.presentation_mode = mw.pm.profile.get(presentation_mode_keyword, False)  # Ensure presentation_mode is set
-        focus_event_filter = FocusEventFilter(editor)
-        editor.web.installEventFilter(focus_event_filter)
+        qconnect(editor.tags.lostFocus, lambda: redraw_reviewer(editor.mw.reviewer))
 
 def keep_focus_during_context_menu(webview, menu):
     if isinstance(webview.editor.parentWindow, EditCurrent) and currently_shows_question(webview.editor.mw.reviewer):

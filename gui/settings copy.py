@@ -1,4 +1,5 @@
 from aqt import QDialog, QLayout, QKeySequence
+
 from .forms.settings_ui import Ui_Settings
 
 class Settings(QDialog):
@@ -12,7 +13,7 @@ class Settings(QDialog):
 
         self.cb = callback
 
-        self.layout().setSizeConstraint(QLayout.SizeConstraint.SetFixedSize)  # Corrected line
+        self.layout().setSizeConstraint(QLayout.SetFixedSize)
 
     def setupUi(self, flip_shortcut: str, presentation_mode: bool, presentation_shortcut: str):
         self.ui.flipShortcut.setKeySequence(QKeySequence(flip_shortcut))
