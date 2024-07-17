@@ -32,7 +32,7 @@ def reshow(self, mw, _old):
 
 def eventFilter(self, obj, event):
     if (
-        event.type() == QEvent.Type.Leave and
+        event.type() == QEvent.Leave and
         self.mw.reviewer.state == 'question' and
         not self.editor.presentation_mode
     ):

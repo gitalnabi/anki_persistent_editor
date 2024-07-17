@@ -8,6 +8,7 @@ from .utils import (
     presentation_shortcut_keyword,
 )
 
+
 def set_settings(
     flip_shortcut: str,
     presentation_mode: bool,
@@ -25,7 +26,7 @@ def show_settings():
     presentation_shortcut = mw.pm.profile.get(presentation_shortcut_keyword, 'Ctrl+P')
 
     dialog.setupUi(flip, presentation_mode, presentation_shortcut)
-    return dialog.exec()  # Corrected line
+    return dialog.exec_()
 
 def init_addon_manager():
     mw.addonManager.setConfigAction(__name__, show_settings)
